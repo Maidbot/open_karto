@@ -192,7 +192,12 @@ namespace karto
     LaserRangeScan* pLaserRangeScan = dynamic_cast<LaserRangeScan*>(pSensorData);
 
     // verify number of range readings in LaserRangeScan matches the number of expected range readings
-    if (pLaserRangeScan->GetNumberOfRangeReadings() != GetNumberOfRangeReadings())
+
+    // Maidbot: instead of checking for exact equality, just ensure that the number
+    // of received points is not greater than what we expect. This is a little
+    // kinder to lidars that produce scans with a slight variation around the
+    // expected number of points.
+    if (pLaserRangeScan->GetNumberOfRangeReadings() > GetNumberOfRangeReadings())
     {
       std::cout << "LaserRangeScan contains " << pLaserRangeScan->GetNumberOfRangeReadings()
                 << " range readings, expected " << GetNumberOfRangeReadings() << std::endl;
